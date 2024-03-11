@@ -6,11 +6,16 @@ from time import sleep
 api_key = "92a9583345190eb5de5047f027e13c67" # api key for open weather map
 current_weather_endpoint = "https://api.openweathermap.org/data/2.5/weather" # api endpoint for current weather
 forecast_endpoint = "http://api.openweathermap.org/data/2.5/forecast" # api endpoint for forecasted weather
+app = True
 
 def clear():
     os.system("cls")
 
+def line():
+    print("\n---------------------------------------\n")
+
 def intro():
+    clear()
     print("\n--- NatalieWeather ---\n")
     enter = int(input("(1) for help / more info.\n(2) to continue\n\n---> "))
     while enter != 1 and enter != 2:
@@ -40,38 +45,74 @@ def get_weather(response):
         data = response.json()
         return data
 
-def give_forecast(): #retrieving all forecasted weather data
-    print(f"FORECASTED WEATHER FOR THE NEXT 5 DAYS...")
+def give_forecast(location): #retrieving all forecasted weather data
+    line()
+    print(f"FORECASTED WEATHER FOR THE NEXT 5 DAYS IN {location}...")
     forecast_list = forecast_data["list"]
     day = 0
     while day < 5:
-        print(f"Temperature: {forecast_list[day]['main']['temp']}°C\nConditions: {forecast_list[day]['weather'][0]['description']}\n")
+        print(f" Temperature: {forecast_list[day]['main']['temp']}°C\n Conditions: {forecast_list[day]['weather'][0]['description']}")
         day += 1 # ends while loop when 5 rounds of forecasted weather is printed
+
+def give_weather(location):
+    # retrieving all current weather data
+    line()
+    current_temp = current_weather_data["main"]["temp"]
+    current_conditions = current_weather_data["weather"][0]["description"]
+    feels_like = current_weather_data["main"]["feels_like"]
+    humidity = current_weather_data["main"]["humidity"]
+
+    # print all above variables showing current weather
+    print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\ nCurrent Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
 
 intro() # calls intro menu 
 clear() # clear screen
-city_name = input("\nEnter city name: ") # user input for location
-print()
 
-current_weather_response = access_data(current_weather_endpoint, city_name)
-forecast_response = access_data(forecast_endpoint, city_name)
-
-while current_weather_response.status_code != 200 or forecast_response.status_code != 200: # handles error incase invalid request occurs
-    print("City not in data")
-    city_name = input("City not found! Enter city name: ")
+while app == True:
+    city_name = input("\nEnter city name: ") # user input for location
+    location = city_name.upper()
     print()
     current_weather_response = access_data(current_weather_endpoint, city_name)
     forecast_response = access_data(forecast_endpoint, city_name)
 
-current_weather_data = get_weather(current_weather_response)
-forecast_data = get_weather(forecast_response)
+    while current_weather_response.status_code != 200 or forecast_response.status_code != 200: # handles error incase invalid request occurs
+        city_name = input("City not found! Enter city name: ")
+        print()
+        current_weather_response = access_data(current_weather_endpoint, city_name)
+        forecast_response = access_data(forecast_endpoint, city_name)
+    
+    print("Choose from (1) , (2) or (0)\nTo find --\n  Weather: press (1) and ENTER\n  Forecast: press (2) and ENTER\n  Weather and Forecast: press (0) and ENTER")
+    users_request = int(input("\nPlease enter (1) , (2) or (0):  "))
+    while users_request != 1 and users_request != 2 and users_request != 0:
+        line()
+        print("\n\n Sorry! Please choose from (1) , (2) or (0)")
+        users_request = int(input("  ---> "))
+    current_weather_data = get_weather(current_weather_response)
+    forecast_data = get_weather(forecast_response)
+    clear()
+    if users_request == 1:
+        give_weather(location=location)
+    elif users_request == 2:
+        give_forecast(location=location)
+    else:
+        give_weather(location=location)
+        give_forecast(location=location)
+    line()
+    print("Look at another city? \n (1) Continue \n (2) Exit")
+    cont = int(input(" ---> "))
+    while cont != 1 and cont != 2:
+        line()
+        print("\n\n Sorry! Please choose from (1) or (2)")
+        cont = int(input("  ---> "))
+    line()
+    if cont == 2:
+        app = False
+        clear()
+        line()
+        print("Thank you for choosing NatalieWeather!")
+        line()
+    else:
+        clear()
 
-# retrieving all current weather data
-current_temp = current_weather_data["main"]["temp"]
-current_conditions = current_weather_data["weather"][0]["description"]
-feels_like = current_weather_data["main"]["feels_like"]
-humidity = current_weather_data["main"]["humidity"]
 
-# print all above variables showing current weather
-print(f"CURRENTLY...\nCurrent Temperature: {current_temp}°C\nCurrent Conditions: {current_conditions}\nFeels Like: {feels_like}°C\nHumidity:{humidity}%\n")
-give_forecast()
+# DO USER HISTORY 
