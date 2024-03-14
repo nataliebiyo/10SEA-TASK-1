@@ -7,9 +7,10 @@ api_key = "92a9583345190eb5de5047f027e13c67" # api key for open weather map
 current_weather_endpoint = "https://api.openweathermap.org/data/2.5/weather" # api endpoint for current weather
 forecast_endpoint = "http://api.openweathermap.org/data/2.5/forecast" # api endpoint for forecasted weather
 app = True
+user_history = []
 
 def clear():
-    os.system("cls")
+    os.system("clear") # "cls" for windows
 
 def line():
     print("\n---------------------------------------\n")
@@ -57,13 +58,18 @@ def give_forecast(location): #retrieving all forecasted weather data
 def give_weather(location):
     # retrieving all current weather data
     line()
+    list = []
     current_temp = current_weather_data["main"]["temp"]
     current_conditions = current_weather_data["weather"][0]["description"]
     feels_like = current_weather_data["main"]["feels_like"]
     humidity = current_weather_data["main"]["humidity"]
 
     # print all above variables showing current weather
-    print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\ nCurrent Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
+    print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\nCurrent Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
+
+"""def show_user_history(location):
+    print("User History This Session:")
+    user_history.append(location)"""
 
 intro() # calls intro menu 
 clear() # clear screen
@@ -71,6 +77,7 @@ clear() # clear screen
 while app == True:
     city_name = input("\nEnter city name: ") # user input for location
     location = city_name.upper()
+    user_history.append(location)
     print()
     current_weather_response = access_data(current_weather_endpoint, city_name)
     forecast_response = access_data(forecast_endpoint, city_name)
@@ -98,21 +105,23 @@ while app == True:
         give_weather(location=location)
         give_forecast(location=location)
     line()
-    print("Look at another city? \n (1) Continue \n (2) Exit")
+    print("Look at another city? \n (1) Continue \n (2) Exit \n (0) User History")
     cont = int(input(" ---> "))
-    while cont != 1 and cont != 2:
+    while cont != 1 and cont != 2 and cont != 0:
         line()
-        print("\n\n Sorry! Please choose from (1) or (2)")
+        print("\n\n Sorry! Please choose from (1) , (2) or (0)")
         cont = int(input("  ---> "))
     line()
-    if cont == 2:
+    if cont == 1:
+        clear()
+    elif cont == 2:
         app = False
         clear()
         line()
         print("Thank you for choosing NatalieWeather!")
         line()
-    else:
-        clear()
-
+    elif cont == 0:
+        print("User History This Session:")
+        print(user_history)
 
 # DO USER HISTORY 
