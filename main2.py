@@ -11,24 +11,24 @@ user_history = []
 app = True
 
 def clear(): # clears page
-    os.system("clear") # "cls" for windows
+    os.system("cls") # "cls" for windows , "clear for mac"
 
 def line(): # divides sections for user readability
     print("\n-----------------------------------------------------\n") 
 
-def intro():
+def intro(): # introduction to application
     clear()
-    print(chalk.cyan.bold("\n--- NatalieWeather ---\n"))
+    print(chalk.cyan.bold("\n--- NatalieWeather ---\n")) # using yachalk module to colour text
     enter = int(input(chalk.blue("(1)") + " for help / more info\n" + chalk.blue("(2)") + " to continue\n\n---> "))
     
-    while enter != 1 and enter != 2:
+    while enter != 1 and enter != 2: # control sequence ensuring enter variable is 1 or 2
         enter = int(input(chalk.red.bold("\n\n (!)  ") + ("Please enter") + chalk.blue(" (1) ") + "or" + chalk.blue(" (2)") + "\n\n---> "))
     
-    if enter == 1:
+    if enter == 1: # response for choice 1
         clear()
-        print("\nWelcome to NatalieWeather!")
-        sleep(2)
-        print(" - NatalieWeather can find weather conditions and predicted forecasts from all over the world.\n")
+        print("\nWelcome to NatalieWeather!") 
+        sleep(2) # delays between texts for readability
+        print(" - NatalieWeather can find weather conditions and predicted forecasts from all over the world.\n") # displays instructions
         print("Here, you can find...\n - current temperature, conditions, what it feels like, humidity and a 5 day forecast.\n")
         sleep(3)
         print("You will be asked to choose a city and choose from forecast and conditions.\n - These results will be found and given to you!")
@@ -37,15 +37,15 @@ def intro():
 
 def access_data(endpoint, location): # accessing 
     weather_parameters = {
-        "q": location,
-        "appid": api_key,
-        "units": "metric"
-    }
+        "q": location, # applies user input
+        "appid": api_key, # uses generated api key
+        "units": "metric" # switches weather units from kelvins to celsius 
+    } # all weather parameters needed for url
     response = requests.get(endpoint, params=weather_parameters)
     return response
 
 def get_weather(response):
-    if response.status_code == 200:
+    if response.status_code == 200: # ensures accessing is successful
         data = response.json()
         return data
 
@@ -85,27 +85,24 @@ def continue_options():
     line()
 
     if cont == 1:
-        #clear()
         pass
     elif cont == 2:
         app = False
-        #clear()
-        line()
         print("Thank you for choosing NatalieWeather!")
         line()
     elif cont == 0:
-        #clear()
         print("User History This Session:")
         print(user_history)
         continue_options()
 
 intro() # calls intro menu 
 clear() # clear screen
-line()
+line() # divides sections
 
 while app == True:
     city_name = input("\nEnter city name: ") # user input for location
-    location = city_name.upper()
+    location = city_name.upper()   
+    location_title_case = city_name.title()
     user_history.append(location)
     line()
     current_weather_response = access_data(current_weather_endpoint, city_name)
