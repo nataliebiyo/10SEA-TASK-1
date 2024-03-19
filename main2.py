@@ -69,12 +69,12 @@ def give_weather(location): # retrieving all current weather data
     humidity = current_weather_data["main"]["humidity"]
 
     # print all above variables showing current weather
-    print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\nCurrent Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
+    print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\n Current Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
 
 def continue_options():
     global app
     line()
-    print("Look at another city? \n (1) Continue \n (2) Exit \n (0) User History")
+    print(chalk.blue("Look at another city? \n (1) Continue \n (2) Exit \n (0) User History"))
     cont = int(input(" ---> "))
 
     while cont != 1 and cont != 2 and cont != 0:
@@ -114,8 +114,8 @@ while app == True:
         current_weather_response = access_data(current_weather_endpoint, city_name)
         forecast_response = access_data(forecast_endpoint, city_name)
     
-    print(chalk.gray("Choose from (1) , (2) or (0)\n\n") + "To find --\n  Weather: press (1) and ENTER\n  Forecast: press (2) and ENTER\n  Weather and Forecast: press (0) and ENTER")
-    users_request = int(input("\nPlease enter (1) , (2) or (0):  "))
+    print(chalk.gray("Choose from (1) , (2) or (0)\n\n") + chalk.blue("To find --") + chalk.cyan("\n  Weather: ") + "press (1) and ENTER\n" + chalk.cyan("  Forecast: ") + "press (2) and ENTER\n" + chalk.cyan("  Weather and Forecast: ") + "press (0) and ENTER")
+    users_request = int(input("\nPlease enter " + chalk.blue("(1) , (2) or (0):  ")))
 
     while users_request != 1 and users_request != 2 and users_request != 0:
         line()
