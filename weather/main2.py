@@ -3,6 +3,7 @@ import requests
 import os
 from time import sleep
 from yachalk import chalk
+import json
 
 api_key = "92a9583345190eb5de5047f027e13c67" # api key for open weather map
 current_weather_endpoint = "https://api.openweathermap.org/data/2.5/weather" # api endpoint for current weather
@@ -11,7 +12,7 @@ user_history = []
 app = True
 
 def clear(): # clears page
-    os.system("cls") # "cls" for windows , "clear for mac"
+    os.system("clear") # "cls" for windows , "clear for mac"
 
 def line(): # divides sections for user readability
     print("\n-----------------------------------------------------\n") 
@@ -127,10 +128,13 @@ while app == True:
     clear()
 
     if users_request == 1:
+        recorded_choice = "Weather"
         give_weather(location=location)
     elif users_request == 2:
+        recorded_choice = "Forecast"
         give_forecast(location=location)
-    else:
+    elif users_request == 0:
+        recorded_choice = "Weather and Forecast"
         give_weather(location=location)
         give_forecast(location=location)
     continue_options()
