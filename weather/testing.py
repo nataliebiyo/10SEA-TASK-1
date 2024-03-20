@@ -18,7 +18,7 @@ print("\nupdated")
 with open("user_history.json", "w") as f:
     json.dump(user_history, f, indent=4)
 
-for x, y in user_history.items():
-    print(x, y)
+for location, recorded_choice in user_history.items():
+    print(location, recorded_choice)
 
 #print(user_history)

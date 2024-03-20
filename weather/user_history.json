@@ -1,9 +1,7 @@
 {
-    "location": "recorded_choice",
-    "gosfrd": "weather",
-    "loca": "weather",
-    "gosford": "weather",
-    "GOSFORD": "Weather and Forecast",
-    "gosforfd": "weather",
-    "Gosford": "Weather and Forecast"
+    "Gosford": "Weather",
+    "Hornsby": "Forecast",
+    "Natalie": "Weather",
+    "Sydney": "Weather",
+    "Australia": "Weather and Forecast"
 }

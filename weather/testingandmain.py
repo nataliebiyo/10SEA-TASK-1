@@ -93,7 +93,7 @@ def continue_options(location, recorded_choice):
         line()
     elif cont == 0:
         try:
-            with open("user_history.json", "r") as f:
+            with open("/Users/nataliebiyo/Desktop/10SEA-TASK-1/weather/user_history.json", "r") as f:
                 user_history = json.load(f)
             #print(user_history)
         except FileNotFoundError:
@@ -103,7 +103,7 @@ def continue_options(location, recorded_choice):
 
         user_history[location] = recorded_choice
 
-        with open("user_history.json", "w") as f:
+        with open("/Users/nataliebiyo/Desktop/10SEA-TASK-1/weather/user_history.json", "w") as f:
             json.dump(user_history, f, indent=4)
 
         print(chalk.blue("User History This Session:"))
