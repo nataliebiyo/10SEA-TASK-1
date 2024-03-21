@@ -1,24 +1,11 @@
 import json
+import os
 
-location = input("---> ")
+def read_history():
+    file_path = os.path.join(os.path.dirname(__file__), "user_history.json")
+    with open(file_path, "r") as file:
+        history = json.load(file)
+    return history
 
-try:
-    with open("user_history.json", "r") as f:
-        user_history = json.load(f)
-    print(user_history)
-except FileNotFoundError:
-    print("File 'user_history.json' not found.")
-except json.JSONDecodeError:
-    print("Error decoding JSON from file.")
-
-user_history[location] = "weather"
-
-
-print("\nupdated")
-with open("user_history.json", "w") as f:
-    json.dump(user_history, f, indent=4)
-
-for location, recorded_choice in user_history.items():
-    print(location, recorded_choice)
-
-#print(user_history)
+print("read")
+print(read_history())
