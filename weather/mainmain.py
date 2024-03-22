@@ -8,7 +8,6 @@ import json
 api_key = "92a9583345190eb5de5047f027e13c67" # api key for open weather map
 current_weather_endpoint = "https://api.openweathermap.org/data/2.5/weather" # api endpoint for current weather
 forecast_endpoint = "http://api.openweathermap.org/data/2.5/forecast" # api endpoint for forecasted weather
-user_history = []
 app = True
 
 def clear(): # clears page
@@ -34,7 +33,7 @@ def intro(): # introduction to application
         sleep(3)
         print("You will be asked to choose a city and choose from forecast and conditions.\n - These results will be found and given to you!")
         sleep(3)
-        read = input("\n\nPress ENTER to continue   ")
+        read = input("\n\nPress ENTER to continue   ") # program will not continue until user response
 
 def access_data(endpoint, location): # accessing 
     weather_parameters = {
@@ -42,29 +41,27 @@ def access_data(endpoint, location): # accessing
         "appid": api_key, # uses generated api key
         "units": "metric" # switches weather units from kelvins to celsius 
     } # all weather parameters needed for url
-    response = requests.get(endpoint, params=weather_parameters)
+    response = requests.get(endpoint, params=weather_parameters) # applies weather parameters to link 
     return response
 
-def get_weather(response):
-    if response.status_code == 200: # ensures accessing is successful
+def get_weather(response): # ensures accessing is successful
+    if response.status_code == 200: # checks if response code is 200, indicating successful request
         data = response.json()
         return data
 
 def give_forecast(location): #retrieving all forecasted weather data
-    line()  
-    print(f"FORECASTED WEATHER FOR THE NEXT 5 DAYS IN {location}...")
-    forecast_list = forecast_data["list"]
-    day = 0
+    line() # divides sections 
+    print(f"FORECASTED WEATHER FOR THE NEXT 5 DAYS IN {location}...") # location is variable for user's location choice
+    forecast_list = forecast_data["list"] 
 
-    while day < 5:
-        print(f" Temperature: {forecast_list[day]['main']['temp']}°C\n Conditions: {forecast_list[day]['weather'][0]['description']}")
-        day += 1 # ends while loop when 5 rounds of forecasted weather is printed
+    day = 0
+    while day < 5: # ends while loop when 5 rounds of forecasted weather is printed
+        print(f" Temperature: {forecast_list[day]['main']['temp']}°C\n Conditions: {forecast_list[day]['weather'][0]['description']}") # prints temperature and weather conditons for day
+        day += 1 # adds to day count until 5 days are counted
 
 def give_weather(location): # retrieving all current weather data
-    line()
-    list = []
-
-    current_temp = current_weather_data["main"]["temp"]
+    line() # divides sections
+    current_temp = current_weather_data["main"]["temp"] # variables for temperature, weather, feels like and humidity
     current_conditions = current_weather_data["weather"][0]["description"]
     feels_like = current_weather_data["main"]["feels_like"]
     humidity = current_weather_data["main"]["humidity"]
@@ -72,7 +69,7 @@ def give_weather(location): # retrieving all current weather data
     # print all above variables showing current weather
     print(f"CURRENTLY IN {location}...\n Current Temperature: {current_temp}°C\n Current Conditions: {current_conditions}\n Feels Like: {feels_like}°C\n Humidity: {humidity}%")
 
-def continue_options():
+def continue_options(location, recorded_choice):
     global app
     line()
     print(chalk.blue("Look at another city? \n (1) Continue \n (2) Exit \n (0) User History"))
@@ -92,9 +89,23 @@ def continue_options():
         print("Thank you for choosing NatalieWeather!")
         line()
     elif cont == 0:
-        print("User History This Session:")
-        print(user_history)
-        continue_options()
+        file_path = os.path.join(os.path.dirname(__file__), "user_history.json")
+        with open(file_path, "r") as file:
+            user_history = json.load(file)
+        
+        user_history[location] = recorded_choice
+
+        with open(file_path, "w") as f:
+            json.dump(user_history, f, indent=4)
+
+        print(chalk.blue("User History:"))
+        for location, recorded_choice in user_history.items():
+            print(f"  - {location}'s {recorded_choice}")
+        continue_options(location, recorded_choice)
+
+"""file_path = os.path.join(os.path.dirname(__file__), "user_history.json")
+with open(file_path, "r") as file:
+    history = json.load(file)"""
 
 intro() # calls intro menu 
 clear() # clear screen
@@ -102,9 +113,6 @@ line() # divides sections
 
 while app == True:
     city_name = input("\nEnter city name: ") # user input for location
-    location = city_name.upper()   
-    location_title_case = city_name.title()
-    user_history.append(location)
     line()
     current_weather_response = access_data(current_weather_endpoint, city_name)
     forecast_response = access_data(forecast_endpoint, city_name)
@@ -115,6 +123,9 @@ while app == True:
         current_weather_response = access_data(current_weather_endpoint, city_name)
         forecast_response = access_data(forecast_endpoint, city_name)
     
+    location = city_name.upper()   
+    location_title_case = city_name.title()
+
     print(chalk.gray("Choose from (1) , (2) or (0)\n\n") + chalk.blue("To find --") + chalk.cyan("\n  Weather: ") + "press (1) and ENTER\n" + chalk.cyan("  Forecast: ") + "press (2) and ENTER\n" + chalk.cyan("  Weather and Forecast: ") + "press (0) and ENTER")
     users_request = int(input("\nPlease enter " + chalk.blue("(1) , (2) or (0):  ")))
 
@@ -137,6 +148,4 @@ while app == True:
         recorded_choice = "Weather and Forecast"
         give_weather(location=location)
         give_forecast(location=location)
-    continue_options()
-
-# DO USER HISTORY 
+    continue_options(location=location_title_case, recorded_choice=recorded_choice)
